@@ -1,4 +1,18 @@
-# precipitation_pred
+# Precipitation Prediction 
+
+## Usage
+To get started with all the dependencies, run 
+```sh
+pip3 install -m requirements.txt
+```
+
+To download the dataset, the shell command
+```sh
+python3 get_data.py
+```
+will download the relevant data and randomly sample
+100 files from the dataset. The sampled files are
+stored in the `data` folder.
 
 
 ## Timetable
