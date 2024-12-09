@@ -3,7 +3,7 @@
 ## Usage
 To get started with all the dependencies, run 
 ```sh
-pip3 install -m requirements.txt
+pip3 install -r requirements.txt
 ```
 
 To download the dataset, the shell command
