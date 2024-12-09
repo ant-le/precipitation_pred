@@ -27,8 +27,8 @@ change this :)
 | 18.12.2024 | Combine EDA+Processing      | Anna      |          |
 | 20.12.2024 | Setup Baseline Model        | Anton     |          |
 | 30.12.2024 | Model Development           | all       |          | 
-| 02.01.2024 | Combine Evaluations + Plots | Yeongshin |          | 
-| 05.01.2024 | Report and Slides           | all       |          |
+| 02.01.2025 | Combine Evaluations + Plots | Yeongshin |          | 
+| 05.01.2025 | Report and Slides           | all       |          |
 ## Versioning
 We will start with using Python **3.11.11** and 
 potentially change the version based on compability
