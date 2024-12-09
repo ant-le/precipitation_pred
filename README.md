@@ -22,7 +22,7 @@ change this :)
 
 |  Deadline  | Task                        | Assignee  | Status   |
 | ---------- | --------------------------- | --------- | -------- |
-| asap       | Create 100 files dataset    | Yeongshin |    [x]   |
+| asap       | Create 100 files dataset    | Yeongshin | :heavy_check_mark: |
 | 16.12.2024 | EDA and Processing          | all       |          |         
 | 18.12.2024 | Combine EDA+Processing      | Anna      |          |
 | 20.12.2024 | Setup Baseline Model        | Anton     |          |
