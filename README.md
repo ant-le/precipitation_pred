@@ -6,13 +6,21 @@ To get started with all the dependencies, run
 pip3 install -r requirements.txt
 ```
 
-To download the dataset, the shell command
-```sh
-python3 get_data.py
+To get the dataset in a script of notebook run:
+```py
+from get_data import create_df
+data = create_df()
 ```
-will download the relevant data and randomly sample
-100 files from the dataset. The sampled files are
-stored in the `data` folder.
+The script will search for a data folder and if it 
+does not exists it will download the relevant data 
+and randomly sample 100 files from the dataset into
+a folder called `data`. In case you have a different
+folder name your can provide the name as an 
+argument to the function.
+
+Secondly, the script will create a combined dataset
+out of the 100 files and index it by the date and 
+index of the file.
 
 
 ## Timetable
