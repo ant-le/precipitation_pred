@@ -1,34 +1,41 @@
+from pathlib import Path
+
+import re
 import requests
 import tarfile
-import os
 import random
 random.seed(3)  # for reproducability
+import pandas as pd
+import logging
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-def get_data():
+def get_data(output_dir:Path):
     # names for files and folders
-    tar_file = "2_LamaH-CE_daily.tar.gz"
-    url = f"https://zenodo.org/record/5153305/files/{tar_file}?download=1"
-    output_dir = "data"
+    tar_file = Path('2_LamaH-CE_daily.tar.gz')
+    url = f"https://zenodo.org/record/5153305/files/{tar_file.name}?download=1"
     target_folder = "A_basins_total_upstrm/2_timeseries/daily/"
 
     # Download file
+    logger.info("No files found in local directory: Downloading file...")
     print("Downloading file...")
     response = requests.get(url, stream=True)
     if response.status_code == 200:
         with open(tar_file, 'wb') as f:
             for chunk in response.iter_content(chunk_size=1024):
                 f.write(chunk)
-        print("File downloaded successfully!")
+        logger.info("File downloaded successfully!")
     else:
-        print("Failed to download file. Status code: ", response.status_code)
+        logger.error(f"Failed to download file. Status code: {response.status_code}")
 
     # Create the output directory
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
 
     # Open the tar file
-    print("Opening tar file...")
+    logger.info("Opening tar file...")
     with tarfile.open(tar_file, "r:gz") as tar:
         # Filter for CSV files in the target directory
         files = [
@@ -38,15 +45,48 @@ def get_data():
 
         # Randomly sample 100 files
         files_to_extract = random.sample(files, 100)
-        print(f"Extracting {len(files_to_extract)} CSV files...")
+        logger.info(f"Extracting {len(files_to_extract)} CSV files...")
         for member in files_to_extract:
-            member.name = os.path.basename(member.name)  # Strip directory structure
+            member.name = Path(member.name).name
             tar.extract(member, path=output_dir)
 
-    print(f"Random CSV files extracted to '{output_dir}'")
-    print('Removing Tar file...')
-    os.remove(tar_file)
+    logger.info(f"Random CSV files extracted to '{output_dir}'")
+    tar_file.unlink()
+
+
+def create_df(data_dir:Path= Path('data')):
+    if not data_dir.exists():
+        get_data()
+        logger.info('Data directory created and files downloaded.')
+
+    data_files = []
+    col_map = {'YYYY':'year', 'MM': 'month', 'DD': 'day'}
+    levels = list(col_map.values())
+
+    for path in data_dir.glob('*ID_*.csv'):
+        file_number = int(re.findall(r'\d+', str(path))[0])
+        data = pd.read_csv(path, sep=';')
+        if len(data.index) < 1 or len(data.columns) < 3:
+            logger.warning(f'Something went wrong with file: {path}')
+            return None
+        else:
+            data['file_idx'] = file_number
+            data.rename(columns=col_map, inplace=True)
+            data['date'] = pd.to_datetime(data.loc[:, levels])
+            data_files.append(data)
+
+    levels.append('file_idx')
+
+    if not data_files:
+        logger.error("No valid data files were found or processed.")
+        raise ValueError("No valid data files were found or processed.")
+
+    data_files = [df for df in data_files if df is not None]
+    data = pd.concat(data_files).set_index(levels).sort_index()
+    logger.info("Dataframe created successfully.")
+    return data
 
 
 if __name__ == '__main__':
-    get_data()
+    data_directory = Path('data')
+    create_df(data_directory)
