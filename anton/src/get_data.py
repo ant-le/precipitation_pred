@@ -1,4 +1,5 @@
 from pathlib import Path
+cwd = Path(__file__).parent.parent.parent
 
 import re
 import requests
@@ -54,7 +55,7 @@ def get_data(output_dir:Path):
     tar_file.unlink()
 
 
-def create_df(data_dir:Path= Path('data')):
+def create_df(data_dir:Path= cwd / 'data' ):
     if not data_dir.exists():
         get_data()
         logger.info('Data directory created and files downloaded.')
@@ -64,18 +65,18 @@ def create_df(data_dir:Path= Path('data')):
     levels = list(col_map.values())
 
     for path in data_dir.glob('*ID_*.csv'):
-        file_number = int(re.findall(r'\d+', str(path))[0])
+        file_number = int(re.findall(r'\d+', str(path.name))[0])
         data = pd.read_csv(path, sep=';')
         if len(data.index) < 1 or len(data.columns) < 3:
             logger.warning(f'Something went wrong with file: {path}')
             return None
         else:
-            data['file_idx'] = file_number
+            data['region'] = file_number
             data.rename(columns=col_map, inplace=True)
             data['date'] = pd.to_datetime(data.loc[:, levels])
             data_files.append(data)
 
-    levels.append('file_idx')
+    levels.append('region')
 
     if not data_files:
         logger.error("No valid data files were found or processed.")
@@ -88,5 +89,4 @@ def create_df(data_dir:Path= Path('data')):
 
 
 if __name__ == '__main__':
-    data_directory = Path('data')
-    create_df(data_directory)
+    create_df()
