@@ -23,7 +23,7 @@ def get_errors(pred:np.array, truth:np.array):
     assert pred.shape == truth.shape
     diff = pred - truth
     N = pred.shape[0]
-    rmse = np.sqrt(np.sum(diff ** 2)/N)
-    abse = np.sum(np.abs(diff)) / N
+    mse = np.sum(diff ** 2)/N
+    rmse = np.sqrt(mse)
     
-    return {'RMSE': float(rmse), 'Abs Error':float(abse)}
+    return {'RMSE': float(rmse), 'MSE':float(mse)}
