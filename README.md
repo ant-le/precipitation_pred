@@ -42,8 +42,10 @@ We decided one the following models and will take the `RMSE` and the `MSE`:
 3. **Hierarchical Model** (Bayesian Models also capturing seasonalities)
 4. Ensembe of **Regression Trees** for each region
 
-In case some of the given approaches will not work, we will opt for [SARIMA](https://en.wikipedia.org/wiki/Autoregressive_integrated_moving_average), which are known to perform well on time-series data with seasonal dependencies.
-
+## Folders
+1. **anton** contains the Linear Regression and the Bayesian Model
+2. **anna*** contains the Regression Trees
+3. ***yeongshin** contains the LSTM approach
 
 
 ## Versioning
