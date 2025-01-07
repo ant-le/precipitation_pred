@@ -45,8 +45,8 @@ class HierarchicalModel:
                 ar_effect = 0
                 seasonal_effect = 0
 
-                for k in range(1, p + 1):
-                    ar_effect += phi_mean[k - 1] * y_pred_mean[r, t - k]
+                for k in range(1, p+1):
+                    ar_effect += phi_mean[k - 1] * y_pred_mean[r, t - k - 1]
 
                 for j in range(J):
                     seasonal_effect += gamma_mean[j] * np.sin(2 * np.pi * j * t / 365) + \
